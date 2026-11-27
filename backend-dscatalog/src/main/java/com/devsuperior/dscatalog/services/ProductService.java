@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,13 +35,13 @@ public class ProductService {
     private ProductDTO productDTO;
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
-        Page<Product> list =  repository.findAll(pageRequest);
+    public Page<ProductDTO> findAllPaged(Pageable pageable) {
+        Page<Product> list =  repository.findAll(pageable);
         List<ProductDTO> dto = new ArrayList<>();
         for (Product entity : list) {
             dto.add(new ProductDTO(entity));
         }
-        return new PageImpl<>(dto, pageRequest, list.getTotalElements());
+        return new PageImpl<>(dto, pageable, list.getTotalElements());
     }
 
     @Transactional(readOnly = true)
