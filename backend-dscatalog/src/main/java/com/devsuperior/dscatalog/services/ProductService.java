@@ -20,12 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductService {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     private ProductDTO productDTO;
 
@@ -46,20 +50,19 @@ public class ProductService {
         return new ProductDTO(entity, entity.getCategories());
     }
 
-    /*
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
         Product entity = new Product();
-        entity.setName(dto.getName());
+        copyDtoToEntity(dto, entity);
         entity = repository.save(entity);
-        return new ProductDTO(entity);
+        return new ProductDTO(entity, entity.getCategories());
     }
 
     @Transactional
     public ProductDTO update(Long id, ProductDTO dto) {
         try {
             Product entity = repository.getOne(id);
-            entity.setName(dto.getName());
+            copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
             return new ProductDTO(entity);
         } catch (EntityNotFoundException e) {
@@ -79,6 +82,22 @@ public class ProductService {
             throw new DataBaseException("Falha de integridade referencial");
         }
     }
-    */
+
+    private void copyDtoToEntity(ProductDTO dto, Product entity) {
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setPrice(dto.getPrice());
+        entity.setImgUrl(dto.getImgUrl());
+        entity.setDate(dto.getDate());
+
+        entity.getCategories().clear();
+
+        for (CategoryDTO cat : dto.getCategories()) {
+            Category category = categoryRepository.getOne(cat.getId());
+            entity.getCategories().add(category);
+        }
+
+
+    }
 
 }

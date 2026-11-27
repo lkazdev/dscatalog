@@ -37,7 +37,6 @@ public class ProductResource {
         return ResponseEntity.ok().body(dto);
     }
 
-    /*
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
         dto = service.insert(dto);
@@ -57,6 +56,5 @@ public class ProductResource {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-    */
 
 }
